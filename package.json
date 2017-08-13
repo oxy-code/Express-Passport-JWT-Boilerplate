@@ -1,0 +1,17 @@
+{
+  "name": "Express-Passport-JWT-Boilerplate",
+  "version": "1.0.0",
+  "description": "Node.js boilerplate built using express, passport-jwt and mysql",
+  "author": "Vel <velu_developer@yahoo.com>",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.13.3",
+    "mysql": "^2.14.1",
+    "passport-jwt": "^2.2.1"
+  },
+  "license": "MIT"
+}
