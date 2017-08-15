@@ -1,5 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const passport = require('passport'),
+	JwtStrategy = require('passport-jwt').Strategy,
+  ExtractJwt = require('passport-jwt').ExtractJwt;
 
 const db = require('./config/database');
 const routes = require('./api/routes');
@@ -9,6 +12,31 @@ const routes = require('./api/routes');
 const PORT = 8080;
 const HOST = '0.0.0.0';
 process.env.privateKey = 'H@shC0desTR!ng';
+
+// Passport JWT Strategy Definition
+const authStrategy = new JwtStrategy({
+	jwtFromRequest	: ExtractJwt.fromAuthHeaderWithScheme('Bearer'),
+	secretOrKey			: process.env.privateKey,
+	authScheme			: 'Bearer'
+}, strategyCallback);
+
+function strategyCallback(jwtPayload, next){
+	db.query("SELECT * FROM users WHERE id = ?", jwtPayload.id, function(err, results, fields){
+		if (err){
+			console.log(`DB ERROR [${err.code}]: ${err.sqlMessage}!\nSQL Query: ${err.sql}`)
+			next(err, false);
+		}
+		if (results.length){
+			var user = results[0];
+			delete user['password'];
+			next(null, user);
+		}
+		else{
+			next(null, false);
+		}
+	});
+}
+passport.use(authStrategy);
 
 // App
 const app = express();

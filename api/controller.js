@@ -106,3 +106,22 @@ exports.authUser = function(req, res){
 		}
 	});
 }
+
+
+exports.getUsers = function(req, res){
+	db.query("SELECT * FROM users WHERE is_active = 1", function(err, results, fields){
+		if (err){
+			console.log(`DB ERROR [${err.code}]: ${err.sqlMessage}!\nSQL Query: ${err.sql}`)
+			return res.status(500).send(err);
+		}
+
+		if(results.length){
+			res.json({ results });
+		}
+		else{
+			res.json({
+				Message: 'No results found'
+			});
+		}
+	});
+}
